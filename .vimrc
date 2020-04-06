@@ -1,102 +1,82 @@
-
-" An example for a vimrc file.
-"
-" Maintainer:	Bram Moolenaar <Bram@vim.org>
-" Last change:	2011 Apr 15
-"
-" To use it, copy it to
-"     for Unix and OS/2:  ~/.vimrc
-"	      for Amiga:  s:.vimrc
-"  for MS-DOS and Win32:  $VIM\_vimrc
-"	    for OpenVMS:  sys$login:.vimrc
-
+" Vundle {{{
 set nocompatible
 filetype off
-
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
 Plugin 'VundleVim/Vundle.vim'
+Plugin 'tpope/vim-surround'
 Plugin 'rust-lang/rust.vim'
-Plugin 'vim-syntastic/syntastic'
+Plugin 'tpope/vim-dispatch'
+Plugin 'tpope/vim-commentary'
+Plugin 'tpope/vim-fugitive'
+"Plugin 'vim-syntastic/syntastic'
+"Plugin 'szw/vim-tags'
+"Plugin 'majutsushi/tagbar'
 "Plugin 'lifepillar/vim-mucomplete'
-Plugin 'szw/vim-tags'
 
-call vundle#end()
+call vundle#end()"
+" End Vundle }}}
+
+" Basics {{{
+
 filetype plugin indent on
+syntax on	" Syntax Highlighting
+
 " allow backspacing over everything in insert mode
 set backspace=indent,eol,start
-set relativenumber
-set number
-set nobackup
-"if has("vms")
-"  set nobackup		" do not keep a backup file, use versions instead
-"else
-"  set backup		" keep a backup file
-"endif
-set history=50		" keep 50 lines of command line history
-set ruler		" show the cursor position all the time
+
+" Viewport Settings
+set number rnu	" Hybrid Line Numbers
+set ruler		" Show the cursor position all the time
 set showcmd		" display incomplete commands
-set incsearch		" do incremental searching
+set history=50	" keep 50 lines of command line history
+set incsearch	" do incremental searching
+set hlsearch	" highlight search results
+set nobackup	" Do not keep backup file
+
+" Add spelling dictionary to completion only if spellcheck is on
 set complete=.,w,b,u,t,i,kspell
 
-" For Win32 GUI: remove 't' flag from 'guioptions': no tearoff menu entries
-" let &guioptions = substitute(&guioptions, "t", "", "g")
+" Indentation Settings
+set noexpandtab
+set tabstop=4
+set shiftwidth=0
+set softtabstop=0
+set smarttab
 
 " Don't use Ex mode, use Q for formatting
 map Q gq
 
 " CTRL-U in insert mode deletes a lot.  Use CTRL-G u to first break undo,
 " so that you can undo CTRL-U after inserting a line break.
-" inoremap <C-U> <C-G>u<C-U>
+inoremap <C-U> <C-G>u<C-U>
 
-" In many terminal emulators the mouse works just fine, thus enable it.
-" if has('mouse')
-"   set mouse=a
-" endif
+" End Basics }}}
 
-" Switch syntax highlighting on, when the terminal has colors
-" Also switch on highlighting the last used search pattern.
-if &t_Co > 2 || has("gui_running")
-  syntax on
-  set hlsearch
-  autocmd GUIEnter * set vb t_vb=
-endif
+" Rusty-Tags Config {{{
+" Doc: https://github.com/dan-t/rusty-tags#vim-configuration
 
-" Only do this part when compiled with support for autocommands.
-if has("autocmd")
+" Set tags file to rusty_tags.vi
+autocmd BufRead *.rs :setlocal tags=./rusty-tags.vi;/,$RUST_SRC_PATH/rusty_tags.vi
+" Generate tags file on save
+autocmd BufWritePost *.rs :silent! exec "!rusty-tags vi --quiet --start-dir=" . expand('%:p:h') . "&" | redraw!
 
-  " Enable file type detection.
-  " Use the default filetype settings, so that mail gets 'tw' set to 72,
-  " 'cindent' is on in C files, etc.
-  " Also load indent files, to automatically do language-dependent indenting.
-  filetype plugin indent on
+" End Rusty-Tags Config }}}
 
-  " Put these in an autocmd group, so that we can delete them easily.
-  augroup vimrcEx
-  au!
+" Misc Stuff {{{
+" This was included in the example .vimrc i started with
+" Might as well keep it in
 
-  " For all text files set 'textwidth' to 78 characters.
-  autocmd FileType text setlocal textwidth=78
-
-  " When editing a file, always jump to the last known cursor position.
-  " Don't do it when the position is invalid or when inside an event handler
-  " (happens when dropping a file on gvim).
-  " Also don't do it when the mark is in the first line, that is the default
-  " position when opening a file.
-  autocmd BufReadPost *
-    \ if line("'\"") > 1 && line("'\"") <= line("$") |
-    \   exe "normal! g`\"" |
-    \ endif
-
-  augroup END
-
-else
-
-  set autoindent		" always set autoindenting on
-
-endif " has("autocmd")
-
+" When editing a file, always jump to the last known cursor position.
+" Don't do it when the position is invalid or when inside an event handler
+" (happens when dropping a file on gvim).
+" Also don't do it when the mark is in the first line, that is the default
+" position when opening a file.
+autocmd BufReadPost *
+\ if line("'\"") > 1 && line("'\"") <= line("$") |
+\   exe "normal! g`\"" |
+\ endif
 " Convenient command to see the difference between the current buffer and the
 " file it was loaded from, thus the changes you made.
 " Only define it when not defined already.
@@ -105,6 +85,21 @@ if !exists(":DiffOrig")
 		  \ | wincmd p | diffthis
 endif
 
-"set completeopt+=menuone
-"let g:mucomplete#enable_auto_at_startup = 1
-"let g:mucomplete#completion_delay = 1
+" End Misc Stuff }}}
+
+" Plugin Settings {{{
+
+" let g:rustfmt_autosave = 1
+
+" Map F9 to toggle tagbar
+nnoremap <silent> <F9> :TagbarToggle<CR>
+
+" End Plugin Settings }}}
+
+" Switch syntax highlighting on, when the terminal has colors
+" Also switch on highlighting the last used search pattern.
+"if &t_Co > 2 || has("gui_running")
+"  autocmd GUIEnter * set vb t_vb=
+"endif
+
+"set foldmethod=syntax
