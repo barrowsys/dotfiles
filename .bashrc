@@ -31,6 +31,25 @@ fi
 
 # }}}
 
+# Functions {{{
+
+# Directories {{{
+# Inspiration: https://github.com/CosineP/dotfiles
+
+# move to directory and list it
+function cs() {
+	cd "$@" && ls
+}
+
+# make directory and cd into it
+function mkcd() {
+	mkdir "$@" && cd "$@"
+}
+
+# End Directories }}}
+
+# End Functions }}}
+
 # Stuff from the defaults {{{
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
