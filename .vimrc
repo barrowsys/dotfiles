@@ -10,6 +10,7 @@ Plugin 'rust-lang/rust.vim'
 Plugin 'tpope/vim-dispatch'
 Plugin 'tpope/vim-commentary'
 Plugin 'tpope/vim-fugitive'
+Plugin 'file:///home/barrow/.vim/coc.nvim/'
 "Plugin 'vim-syntastic/syntastic'
 "Plugin 'szw/vim-tags'
 "Plugin 'majutsushi/tagbar'
@@ -20,7 +21,7 @@ call vundle#end()"
 
 " Basics {{{
 
-filetype plugin indent on
+filetype plugin indent on	" tbh dont know what this one does but it's important lol
 syntax on	" Syntax Highlighting
 
 " allow backspacing over everything in insert mode
@@ -34,11 +35,13 @@ set history=50	" keep 50 lines of command line history
 set incsearch	" do incremental searching
 set hlsearch	" highlight search results
 set nobackup	" Do not keep backup file
+set nowritebackup	" ^^^
+highlight clear SignColumn	" Make gutter blend in
 
 " Add spelling dictionary to completion only if spellcheck is on
 set complete=.,w,b,u,t,i,kspell
 
-" Indentation Settings
+" Indentation Settings (Tabs only)
 set noexpandtab
 set tabstop=4
 set shiftwidth=0
@@ -77,6 +80,7 @@ autocmd BufReadPost *
 \ if line("'\"") > 1 && line("'\"") <= line("$") |
 \   exe "normal! g`\"" |
 \ endif
+
 " Convenient command to see the difference between the current buffer and the
 " file it was loaded from, thus the changes you made.
 " Only define it when not defined already.
@@ -85,17 +89,6 @@ if !exists(":DiffOrig")
 		  \ | wincmd p | diffthis
 endif
 
-" End Misc Stuff }}}
-
-" Plugin Settings {{{
-
-" let g:rustfmt_autosave = 1
-
-" Map F9 to toggle tagbar
-nnoremap <silent> <F9> :TagbarToggle<CR>
-
-" End Plugin Settings }}}
-
 " Switch syntax highlighting on, when the terminal has colors
 " Also switch on highlighting the last used search pattern.
 "if &t_Co > 2 || has("gui_running")
@@ -103,3 +96,31 @@ nnoremap <silent> <F9> :TagbarToggle<CR>
 "endif
 
 "set foldmethod=syntax
+
+" End Misc Stuff }}}
+
+" COC Settings {{{
+
+" Tab opens completion, as well as cycling thru it (shift tab goes back)
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+" map ctrl-space (and the weird terminal thing that it maps to) to do completion
+inoremap <silent><expr> <c-space> coc#refresh()
+inoremap <silent><expr> <c-@> coc#refresh()
+"These came with the thing idk
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+
+" End COC Settings }}}
+
