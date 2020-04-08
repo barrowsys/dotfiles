@@ -10,11 +10,7 @@ Plugin 'rust-lang/rust.vim'
 Plugin 'tpope/vim-dispatch'
 Plugin 'tpope/vim-commentary'
 Plugin 'tpope/vim-fugitive'
-Plugin 'file:///home/barrow/.vim/coc.nvim/'
-"Plugin 'vim-syntastic/syntastic'
-"Plugin 'szw/vim-tags'
-"Plugin 'majutsushi/tagbar'
-"Plugin 'lifepillar/vim-mucomplete'
+Plugin 'file:///home/barrow/.vim/coc.nvim/' " Hacky workaround for not doing this properly lol
 
 call vundle#end()"
 " End Vundle }}}
