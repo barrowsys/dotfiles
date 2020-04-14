@@ -1,6 +1,8 @@
 # My stuff {{{
-stty -ixon -ixoff # turns off CTRL-S, because, why?
 [[ $- != *i* ]] && return # do nothing if not interactive
+
+# turns off CTRL-S, because, why?
+stty -ixon -ixoff
 
 # set vim as editor and set terminal mode to vi
 export EDITOR=vim
