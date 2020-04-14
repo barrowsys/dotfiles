@@ -53,47 +53,15 @@ inoremap <C-U> <C-G>u<C-U>
 
 " End Basics }}}
 
-" Rusty-Tags Config {{{
-" Doc: https://github.com/dan-t/rusty-tags#vim-configuration
+" Keybinds {{{
 
-" Set tags file to rusty_tags.vi
-autocmd BufRead *.rs :setlocal tags=./rusty-tags.vi;/,$RUST_SRC_PATH/rusty_tags.vi
-" Generate tags file on save
-autocmd BufWritePost *.rs :silent! exec "!rusty-tags vi --quiet --start-dir=" . expand('%:p:h') . "&" | redraw!
+" Ctrl-B to quickly switch to last buffer
+nnoremap <C-B> :b!#<Enter>
 
-" End Rusty-Tags Config }}}
+" Ctrl-S to save
+nnoremap <C-S> :w<Enter>
 
-" Misc Stuff {{{
-" This was included in the example .vimrc i started with
-" Might as well keep it in
-
-" When editing a file, always jump to the last known cursor position.
-" Don't do it when the position is invalid or when inside an event handler
-" (happens when dropping a file on gvim).
-" Also don't do it when the mark is in the first line, that is the default
-" position when opening a file.
-autocmd BufReadPost *
-\ if line("'\"") > 1 && line("'\"") <= line("$") |
-\   exe "normal! g`\"" |
-\ endif
-
-" Convenient command to see the difference between the current buffer and the
-" file it was loaded from, thus the changes you made.
-" Only define it when not defined already.
-if !exists(":DiffOrig")
-  command DiffOrig vert new | set bt=nofile | r ++edit # | 0d_ | diffthis
-		  \ | wincmd p | diffthis
-endif
-
-" Switch syntax highlighting on, when the terminal has colors
-" Also switch on highlighting the last used search pattern.
-"if &t_Co > 2 || has("gui_running")
-"  autocmd GUIEnter * set vb t_vb=
-"endif
-
-"set foldmethod=syntax
-
-" End Misc Stuff }}}
+" End Keybinds }}}
 
 " COC Settings {{{
 
