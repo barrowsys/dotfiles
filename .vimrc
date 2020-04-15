@@ -96,7 +96,11 @@ nnoremap <leader>rc :so $MYVIMRC<Enter>:e<Enter>
 
 " End Keybinds }}}
 
+" Plugin Stuff {{{
 
+let g:rustfmt_autosave = 1
+
+" End Plugin Stuff }}}
 
 " COC Settings {{{
 
