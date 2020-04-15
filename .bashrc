@@ -37,6 +37,9 @@ fi
 # Set vim to user-installed neovim
 alias vim='~/bin/nvim.appimage'
 
+# Handy shortcut to view big folders
+alias size='du --max-depth=1 -h | sort -h'
+
 # }}}
 
 # Functions {{{
