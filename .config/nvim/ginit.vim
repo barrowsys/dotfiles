@@ -4,3 +4,4 @@ let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 " Make comments not italic (it breaks firacode)
 highlight Comment gui=none
 set background=dark " set to light if u want?? but light mode sux lul
+let g:theme_set = true

@@ -55,9 +55,11 @@ highlight clear SignColumn	" Make gutter blend in
 " }}}
 
 " Theme Settings {{{
-set background=dark
-let g:solarized_termcolors=256
-colorscheme solarized
+if !exists("g:theme_set")
+	set background=dark
+	let g:solarized_termcolors=256
+	colorscheme solarized
+endif
 " }}}
 
 " ToggleBg() {{{

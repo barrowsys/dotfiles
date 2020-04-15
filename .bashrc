@@ -11,9 +11,6 @@ set -o vi
 # cypher log off
 mesg n
 
-# rust path entries
-export PATH=~/.cargo/bin:$PATH
-
 # set ls defaults
 alias ls='ls -F --color=auto'
 
