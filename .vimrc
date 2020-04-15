@@ -53,14 +53,37 @@ inoremap <C-U> <C-G>u<C-U>
 
 " End Basics }}}
 
+" Filetype-Specific Stuff {{{
+
+augroup FTSpecific
+	:autocmd!
+	" Syntax based folding for rust files, but start completely unfolded
+	autocmd BufRead *.rs
+				\ :setlocal foldmethod=syntax |
+				\ :setlocal foldlevel=100
+	" Indentation Settings (Rust is a meanie and formats to spaces even if you
+	" try to use tabs)
+	autocmd BufRead *.rs 
+				\ set expandtab |
+				\ set tabstop=4 |
+				\ set shiftwidth=4 |
+				\ set softtabstop=-1 |
+				\ set smarttab
+	autocmd BufRead .vimrc,init.vim :setlocal foldmethod=marker
+augroup END
+
+" End Filetype-Specific Stuff }}}
+
 " Keybinds {{{
 
 " Ctrl-B to quickly switch to last buffer
 nnoremap <C-B> :b!#<Enter>
 
 " Switch buffers quickly a la tpope/vim-unimpaired
-nnoremap ]b :bnext<Enter>
-nnoremap [b :bprevious<Enter>
+nnoremap ]b :bnext!<Enter>
+nnoremap [b :bprevious!<Enter>
+" Close buffer
+nnoremap -b :bd<Enter>
 
 " Ctrl-S to save
 nnoremap <C-S> :w<Enter>
@@ -68,7 +91,12 @@ nnoremap <C-S> :w<Enter>
 " z1 folds 1st layer of folds
 nnoremap z1 :%foldc<Enter>
 
+" \rc to reload vimrc and the open file
+nnoremap <leader>rc :so $MYVIMRC<Enter>:e<Enter>
+
 " End Keybinds }}}
+
+
 
 " COC Settings {{{
 
@@ -93,6 +121,16 @@ nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 nmap <leader>rn <Plug>(coc-rename)
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
+" Use K to show documentation in preview window.
+nnoremap <silent> K :call <SID>show_documentation()<CR>
 
 " End COC Settings }}}
 
