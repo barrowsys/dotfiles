@@ -1,19 +1,19 @@
-" Vundle {{{
+" Plugins {{{
 set nocompatible
 filetype off
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
+call plug#begin()
 
-Plugin 'VundleVim/Vundle.vim'
-Plugin 'tpope/vim-surround'
-Plugin 'rust-lang/rust.vim'
-Plugin 'tpope/vim-dispatch'
-Plugin 'tpope/vim-commentary'
-Plugin 'tpope/vim-fugitive'
-Plugin 'file:///home/barrow/.vim/coc.nvim/' " Hacky workaround for not doing this properly lol
+Plug 'tpope/vim-surround'
+Plug 'altercation/vim-colors-solarized'
+Plug 'rust-lang/rust.vim'
+Plug 'tpope/vim-dispatch'
+Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-fugitive'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'JulioJu/neovim-qt-colors-solarized-truecolor-only'
 
-call vundle#end()"
-" End Vundle }}}
+call plug#end()
+" End Plugins }}}
 
 " Basics {{{
 
@@ -22,17 +22,6 @@ syntax on	" Syntax Highlighting
 
 " allow backspacing over everything in insert mode
 set backspace=indent,eol,start
-
-" Viewport Settings
-set number rnu	" Hybrid Line Numbers
-set ruler		" Show the cursor position all the time
-set showcmd		" display incomplete commands
-set history=50	" keep 50 lines of command line history
-set incsearch	" do incremental searching
-set hlsearch	" highlight search results
-set nobackup	" Do not keep backup file
-set nowritebackup	" ^^^
-highlight clear SignColumn	" Make gutter blend in
 
 " Add spelling dictionary to completion only if spellcheck is on
 set complete=.,w,b,u,t,i,kspell
@@ -53,14 +42,52 @@ inoremap <C-U> <C-G>u<C-U>
 
 " End Basics }}}
 
+" Visual Stuff {{{
+
+" Viewport Settings {{{
+set number rnu	" Hybrid Line Numbers
+set ruler		" Show the cursor position all the time
+set showcmd		" display incomplete commands
+set incsearch	" do incremental searching
+set hlsearch	" highlight search results
+set nobk nowb	" Do not keep backup file
+highlight clear SignColumn	" Make gutter blend in
+" }}}
+
+" Gui Settings {{{
+if has("gui_running")
+	colorscheme solarized_nvimqt " B)
+	set guifont=Fira\ Code\ Light:h18 " set font
+	let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+	" Make comments not italic (it breaks firacode)
+	highlight Comment gui=none
+	set background=dark " set to light if u want?? but light mode sux lul
+else
+	set background=dark
+	let g:solarized_termcolors=256
+	colorscheme solarized
+endif
+" }}}
+
+" ToggleBg() {{{
+function! s:ToggleBg()
+	let &background = ( &background == "dark"? "light" : "dark" )
+    if exists("g:colors_name")
+        exe "colorscheme " . g:colors_name
+    endif
+endfunction
+" }}}
+
+" End Visual Stuff }}}
+
 " Filetype-Specific Stuff {{{
 
 augroup FTSpecific
-	:autocmd!
+	autocmd!
 	" Syntax based folding for rust files, but start completely unfolded
 	autocmd BufRead *.rs
-				\ :setlocal foldmethod=syntax |
-				\ :setlocal foldlevel=100
+				\ setlocal foldmethod=syntax |
+				\ setlocal foldlevel=100
 	" Indentation Settings (Rust is a meanie and formats to spaces even if you
 	" try to use tabs)
 	autocmd BufRead *.rs 
@@ -76,14 +103,15 @@ augroup END
 
 " Keybinds {{{
 
+" Buffers {{{
 " Ctrl-B to quickly switch to last buffer
 nnoremap <C-B> :b!#<Enter>
-
 " Switch buffers quickly a la tpope/vim-unimpaired
 nnoremap ]b :bnext!<Enter>
 nnoremap [b :bprevious!<Enter>
 " Close buffer
 nnoremap -b :bd<Enter>
+" }}}
 
 " Ctrl-S to save
 nnoremap <C-S> :w<Enter>
@@ -94,10 +122,14 @@ nnoremap z1 :%foldc<Enter>
 " \rc to reload vimrc and the open file
 nnoremap <leader>rc :so $MYVIMRC<Enter>:e<Enter>
 
+" bg to toggle between light and dark background
+nmap bg :call <SID>ToggleBg()<CR>
+
 " End Keybinds }}}
 
 " Plugin Stuff {{{
 
+" Automatically format rust code on save
 let g:rustfmt_autosave = 1
 
 " End Plugin Stuff }}}
@@ -119,11 +151,10 @@ endfunction
 " map ctrl-space (and the weird terminal thing that it maps to) to do completion
 inoremap <silent><expr> <c-space> coc#refresh()
 inoremap <silent><expr> <c-@> coc#refresh()
-"These came with the thing idk
 nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gy <Plug>(coc-type-definition)
-nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> gr <Plug>(coc-references)
+"nmap <silent> gy <Plug>(coc-type-definition)
+"nmap <silent> gi <Plug>(coc-implementation)
+"nmap <silent> gr <Plug>(coc-references)
 nmap <leader>rn <Plug>(coc-rename)
 
 function! s:show_documentation()

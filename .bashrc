@@ -13,7 +13,6 @@ mesg n
 
 # rust path entries
 export PATH=~/.cargo/bin:$PATH
-export RUST_SRC_PATH=$(rustc --print sysroot)/lib/rustlib/src/rust/src
 
 # set ls defaults
 alias ls='ls -F --color=auto'
@@ -30,6 +29,13 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
+
+# }}}
+
+# Aliases {{{
+
+# Set vim to user-installed neovim
+alias vim='~/bin/nvim.appimage'
 
 # }}}
 
