@@ -58,6 +58,10 @@ inoremap <C-U> <C-G>u<C-U>
 " Ctrl-B to quickly switch to last buffer
 nnoremap <C-B> :b!#<Enter>
 
+" Switch buffers quickly a la tpope/vim-unimpaired
+nnoremap ]b :bnext
+nnoremap [b :bprevious
+
 " Ctrl-S to save
 nnoremap <C-S> :w<Enter>
 
