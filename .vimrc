@@ -59,8 +59,8 @@ inoremap <C-U> <C-G>u<C-U>
 nnoremap <C-B> :b!#<Enter>
 
 " Switch buffers quickly a la tpope/vim-unimpaired
-nnoremap ]b :bnext
-nnoremap [b :bprevious
+nnoremap ]b :bnext<Enter>
+nnoremap [b :bprevious<Enter>
 
 " Ctrl-S to save
 nnoremap <C-S> :w<Enter>
