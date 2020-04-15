@@ -65,6 +65,9 @@ nnoremap [b :bprevious<Enter>
 " Ctrl-S to save
 nnoremap <C-S> :w<Enter>
 
+" z1 folds 1st layer of folds
+nnoremap z1 :%foldc<Enter>
+
 " End Keybinds }}}
 
 " COC Settings {{{
