@@ -3,14 +3,18 @@ set nocompatible
 filetype off
 call plug#begin()
 
-Plug 'tpope/vim-surround'
 Plug 'altercation/vim-colors-solarized'
 Plug 'rust-lang/rust.vim'
+Plug 'tpope/vim-surround'
 Plug 'tpope/vim-dispatch'
+Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-endwise'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'JulioJu/neovim-qt-colors-solarized-truecolor-only'
+Plug 'honza/vim-snippets/'
 
 call plug#end()
 " End Plugins }}}
@@ -113,11 +117,12 @@ nnoremap <C-S> :w<Enter>
 " z1 folds 1st layer of folds
 nnoremap z1 :%foldc<Enter>
 
-" \rc to reload vimrc and the open file
-nnoremap <leader>rc :so $MYVIMRC<Enter>:e<Enter>
+" \rc to reload vimrc and \rf to reload the open file
+nnoremap <leader>rc :so $MYVIMRC<Enter>
+nnoremap <leader>rf :e<Enter>
 
-" bg to toggle between light and dark background
-nmap bg :call <SID>ToggleBg()<CR>
+" \bg to toggle between light and dark background
+nmap <Leader>bg :call <SID>ToggleBg()<CR>
 
 " End Keybinds }}}
 
@@ -130,36 +135,46 @@ let g:rustfmt_autosave = 1
 
 " COC Settings {{{
 
+" Completion Bindings {{{
+" map ctrl-space to do completion
+inoremap <silent><expr> <c-space> coc#refresh()
 " Tab opens completion, as well as cycling thru it (shift tab goes back)
 inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
+  \ pumvisible() ? "\<C-n>" :
+  \ <SID>check_back_space() ? "\<TAB>" :
+  \ coc#refresh()
 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
 function! s:check_back_space() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
+let col = col('.') - 1
+return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
+" }}}
 
-" map ctrl-space (and the weird terminal thing that it maps to) to do completion
-inoremap <silent><expr> <c-space> coc#refresh()
-inoremap <silent><expr> <c-@> coc#refresh()
 nmap <silent> gd <Plug>(coc-definition)
+nmap <leader>rn <Plug>(coc-rename)
+" Snippets {{{
+imap <C-l> <Plug>(coc-snippets-expand)
+let g:coc_snippet_next = '<c-j>'
+let g:coc_snippet_prev = '<c-k>'
+imap <C-j> <Plug>(coc-snippets-expand-jump)
+" }}}
+"inoremap <silent><expr> <c-@> coc#refresh()
 "nmap <silent> gy <Plug>(coc-type-definition)
 "nmap <silent> gi <Plug>(coc-implementation)
 "nmap <silent> gr <Plug>(coc-references)
-nmap <leader>rn <Plug>(coc-rename)
 
+" Show Documentation with K {{{
 function! s:show_documentation()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  else
-    call CocAction('doHover')
-  endif
+	if (index(['vim','help'], &filetype) >= 0)
+		execute 'h '.expand('<cword>')
+	else
+		call CocAction('doHover')
+	endif
 endfunction
 " Use K to show documentation in preview window.
 nnoremap <silent> K :call <SID>show_documentation()<CR>
+" }}}
 
 " End COC Settings }}}
 
