@@ -14,7 +14,6 @@ Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'honza/vim-snippets/'
-Plug 'majutsushi/tagbar'
 Plug 'bling/vim-airline'
 Plug 'bling/vim-bufferline'
 Plug 'vim-airline/vim-airline-themes'
@@ -153,8 +152,9 @@ let g:rustfmt_autosave = 1
 let g:airline_powerline_fonts = 1
 
 " Set theme
-let g:airline_theme='base16_solarized'
+let g:airline_theme='owo'
 let g:airline_skip_empty_sections = 1
+let g:airline_section_z='%p%% %{g:airline_symbols.linenr}%0l/%L:%v'
 
 " }}}
 
