@@ -3,7 +3,7 @@ set nocompatible
 filetype off
 call plug#begin()
 
-Plug 'altercation/vim-colors-solarized'
+Plug 'icymind/NeoSolarized'
 Plug 'rust-lang/rust.vim'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-dispatch'
@@ -13,8 +13,12 @@ Plug 'tpope/vim-endwise'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'JulioJu/neovim-qt-colors-solarized-truecolor-only'
+"Plug 'JulioJu/neovim-qt-colors-solarized-truecolor-only'
 Plug 'honza/vim-snippets/'
+Plug 'majutsushi/tagbar'
+Plug 'bling/vim-airline'
+Plug 'bling/vim-bufferline'
+Plug 'vim-airline/vim-airline-themes'
 
 call plug#end()
 " End Plugins }}}
@@ -40,7 +44,7 @@ set smarttab
 " Don't use Ex mode, use Q for formatting
 map Q gq
 
-" CTRL-U in insert mode deletes a lot.  Use CTRL-G u to first break undo,
+" CTRL-U in insert mode deletes a lot.	Use CTRL-G u to first break undo,
 " so that you can undo CTRL-U after inserting a line break.
 inoremap <C-U> <C-G>u<C-U>
 
@@ -59,20 +63,23 @@ highlight clear SignColumn	" Make gutter blend in
 " }}}
 
 " Theme Settings {{{
-if !exists("g:theme_set")
-	set background=dark
-	let g:solarized_termcolors=256
-	colorscheme solarized
-	let g:theme_set=1
-endif
+let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+colorscheme NeoSolarized
+set background=dark
+set termguicolors
+let g:theme_set=1
+set guifont=Fira\ Code\ Light:h18 " set font
+" Make comments not italic (it breaks firacode)
+highlight Comment gui=none
 " }}}
 
 " ToggleBg() {{{
 function! s:ToggleBg()
 	let &background = ( &background == "dark"? "light" : "dark" )
-    if exists("g:colors_name")
-        exe "colorscheme " . g:colors_name
-    endif
+	if exists("g:colors_name")
+		exe "colorscheme " . g:colors_name
+	endif
+	highlight clear SignColumn	" Make gutter blend in
 endfunction
 " }}}
 
@@ -88,7 +95,7 @@ augroup FTSpecific
 				\ setlocal foldlevel=100
 	" Indentation Settings (Rust is a meanie and formats to spaces even if you
 	" try to use tabs)
-	autocmd BufRead *.rs 
+	autocmd BufRead *.rs
 				\ set expandtab |
 				\ set tabstop=4 |
 				\ set shiftwidth=4 |
@@ -117,12 +124,19 @@ nnoremap <C-S> :w<Enter>
 " z1 folds 1st layer of folds
 nnoremap z1 :%foldc<Enter>
 
+" Config Helpers {{{
 " \rc to reload vimrc and \rf to reload the open file
 nnoremap <leader>rc :so $MYVIMRC<Enter>
 nnoremap <leader>rf :e<Enter>
+" \pi to install plugins
+nnoremap <leader>pi :PlugInstall<Enter>
 
 " \bg to toggle between light and dark background
 nmap <Leader>bg :call <SID>ToggleBg()<CR>
+" }}}
+
+" \tg to toggle tagbar
+nmap <Leader>tg :TagbarToggle<CR>
 
 " End Keybinds }}}
 
@@ -130,6 +144,9 @@ nmap <Leader>bg :call <SID>ToggleBg()<CR>
 
 " Automatically format rust code on save
 let g:rustfmt_autosave = 1
+
+" Enable powerline in the status bar
+let g:airline_powerline_fonts = 1
 
 " End Plugin Stuff }}}
 
@@ -140,14 +157,14 @@ let g:rustfmt_autosave = 1
 inoremap <silent><expr> <c-space> coc#refresh()
 " Tab opens completion, as well as cycling thru it (shift tab goes back)
 inoremap <silent><expr> <TAB>
-  \ pumvisible() ? "\<C-n>" :
-  \ <SID>check_back_space() ? "\<TAB>" :
-  \ coc#refresh()
+	\ pumvisible() ? "\<C-n>" :
+	\ <SID>check_back_space() ? "\<TAB>" :
+	\ coc#refresh()
 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
 function! s:check_back_space() abort
 let col = col('.') - 1
-return !col || getline('.')[col - 1]  =~# '\s'
+return !col || getline('.')[col - 1]	=~# '\s'
 endfunction
 " }}}
 
