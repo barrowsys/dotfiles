@@ -59,18 +59,21 @@ set showcmd		" display incomplete commands
 set incsearch	" do incremental searching
 set hlsearch	" highlight search results
 set nobk nowb	" Do not keep backup file
-highlight clear SignColumn	" Make gutter blend in
 " }}}
 
 " Theme Settings {{{
+" I think these two enable true color in terminal,, or something
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+set termguicolors
+
 colorscheme NeoSolarized
 set background=dark
-set termguicolors
-let g:theme_set=1
+
 set guifont=Fira\ Code\ Light:h18 " set font
+
 " Make comments not italic (it breaks firacode)
 highlight Comment gui=none
+highlight clear SignColumn	" Make gutter blend in
 " }}}
 
 " ToggleBg() {{{
