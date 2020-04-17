@@ -13,7 +13,6 @@ Plug 'tpope/vim-endwise'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-"Plug 'JulioJu/neovim-qt-colors-solarized-truecolor-only'
 Plug 'honza/vim-snippets/'
 Plug 'majutsushi/tagbar'
 Plug 'bling/vim-airline'
@@ -69,7 +68,7 @@ set termguicolors
 colorscheme NeoSolarized
 set background=dark
 
-set guifont=Fira\ Code\ Light:h18 " set font
+set guifont=Fira\ Code\ Light:h19 " set font
 
 " Make comments not italic (it breaks firacode)
 highlight Comment gui=none
@@ -148,10 +147,16 @@ nmap <Leader>tg :TagbarToggle<CR>
 " Automatically format rust code on save
 let g:rustfmt_autosave = 1
 
+" Airline {{{
+
 " Enable powerline in the status bar
 let g:airline_powerline_fonts = 1
 
-" End Plugin Stuff }}}
+" Set theme
+let g:airline_theme='base16_solarized'
+let g:airline_skip_empty_sections = 1
+
+" }}}
 
 " COC Settings {{{
 
@@ -197,4 +202,7 @@ nnoremap <silent> K :call <SID>show_documentation()<CR>
 " }}}
 
 " End COC Settings }}}
+
+" End Plugin Stuff }}}
+
 
