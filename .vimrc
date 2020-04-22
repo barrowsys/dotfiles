@@ -17,6 +17,7 @@ Plug 'honza/vim-snippets/'
 Plug 'bling/vim-airline'
 Plug 'bling/vim-bufferline'
 Plug 'vim-airline/vim-airline-themes'
+Plug 'scrooloose/syntastic'
 
 call plug#end()
 " End Plugins }}}
