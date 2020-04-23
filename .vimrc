@@ -18,6 +18,9 @@ Plug 'bling/vim-airline'
 Plug 'bling/vim-bufferline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'scrooloose/syntastic'
+Plug 'godlygeek/tabular'
+Plug 'plasticboy/vim-markdown'
+Plug 'mattn/emmet-vim'
 
 call plug#end()
 " End Plugins }}}
@@ -146,6 +149,9 @@ nmap <Leader>tg :TagbarToggle<CR>
 
 " Automatically format rust code on save
 let g:rustfmt_autosave = 1
+
+" Make emmet trigger with ,,
+let g:user_emmet_leader_key=','
 
 " Airline {{{
 
