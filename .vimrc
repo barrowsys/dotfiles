@@ -97,7 +97,8 @@ augroup FTSpecific
 	" Syntax based folding for rust files, but start completely unfolded
 	autocmd BufRead *.rs
 				\ setlocal foldmethod=syntax |
-				\ setlocal foldlevel=100
+				\ setlocal foldlevel=100 |
+				\ nnoremap <buffer> gq :RustFmt<Enter>
 	" Indentation Settings (Rust is a meanie and formats to spaces even if you
 	" try to use tabs)
 	autocmd BufRead *.rs
@@ -147,11 +148,12 @@ nmap <Leader>tg :TagbarToggle<CR>
 
 " Plugin Stuff {{{
 
-" Automatically format rust code on save
-let g:rustfmt_autosave = 1
+" DON'T automatically format rust code on save
+" Instead use the Q binding
+let g:rustfmt_autosave = 0
 
-" Make emmet trigger with ,,
-let g:user_emmet_leader_key=','
+" Make emmet trigger with <C-y>,
+let g:user_emmet_leader_key=''
 
 " Airline {{{
 
