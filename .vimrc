@@ -22,6 +22,9 @@ Plug 'godlygeek/tabular'
 Plug 'plasticboy/vim-markdown'
 Plug 'mattn/emmet-vim'
 
+" Coc Extensions
+Plug 'neoclide/coc-rls'
+
 call plug#end()
 " End Plugins }}}
 
@@ -194,9 +197,9 @@ let g:coc_snippet_prev = '<c-k>'
 imap <C-j> <Plug>(coc-snippets-expand-jump)
 " }}}
 "inoremap <silent><expr> <c-@> coc#refresh()
-"nmap <silent> gy <Plug>(coc-type-definition)
-"nmap <silent> gi <Plug>(coc-implementation)
-"nmap <silent> gr <Plug>(coc-references)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
 
 " Show Documentation with K {{{
 function! s:show_documentation()
