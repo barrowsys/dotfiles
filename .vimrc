@@ -22,9 +22,6 @@ Plug 'godlygeek/tabular'
 Plug 'plasticboy/vim-markdown'
 Plug 'mattn/emmet-vim'
 
-" Coc Extensions
-Plug 'neoclide/coc-rls'
-
 call plug#end()
 " End Plugins }}}
 
