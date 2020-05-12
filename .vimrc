@@ -21,6 +21,8 @@ Plug 'scrooloose/syntastic'
 Plug 'godlygeek/tabular'
 Plug 'plasticboy/vim-markdown'
 Plug 'mattn/emmet-vim'
+Plug 'wellle/targets.vim'
+Plug 'tibabit/vim-templates'
 
 call plug#end()
 " End Plugins }}}
@@ -130,19 +132,30 @@ nnoremap <C-S> :w<Enter>
 " z1 folds 1st layer of folds
 nnoremap z1 :%foldc<Enter>
 
+" \bg to toggle between light and dark background
+nmap <Leader>bg :call <SID>ToggleBg()<CR>
+
 " Config Helpers {{{
 " \rc to reload vimrc and \rf to reload the open file
 nnoremap <leader>rc :so $MYVIMRC<Enter>
 nnoremap <leader>rf :e<Enter>
 " \pi to install plugins
 nnoremap <leader>pi :PlugInstall<Enter>
-
-" \bg to toggle between light and dark background
-nmap <Leader>bg :call <SID>ToggleBg()<CR>
 " }}}
 
-" \tg to toggle tagbar
-nmap <Leader>tg :TagbarToggle<CR>
+" " \tg to toggle tagbar
+" nmap <Leader>tg :TagbarToggle<CR>
+
+function RunCommandUnderCursor()
+	execute "normal! ya)"
+	let command = getreg("\"")
+	if command =~ "^\(.*\)$"
+		let output = eval(command)
+		execute "normal! ca)" . output . "\<Esc>"
+	endif
+endfunction
+
+nmap <Leader>re :call RunCommandUnderCursor()<CR>
 
 " End Keybinds }}}
 
@@ -154,6 +167,16 @@ let g:rustfmt_autosave = 0
 
 " Make emmet trigger with <C-y>,
 let g:user_emmet_leader_key=''
+
+" Templates {{{
+
+let g:tmpl_search_paths = ['~/templates']
+
+let g:tmpl_company = "Ezra Barrow"
+let g:tmpl_author_email = "barrow@tilde.team"
+let g:tmpl_license = "GPL-3.0-only"
+
+" }}}
 
 " Airline {{{
 
