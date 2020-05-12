@@ -32,7 +32,10 @@ fi
 # Aliases {{{
 
 # Set vim to user-installed neovim
-alias vim='~/bin/nvim.appimage'
+NEOVIM_BIN='~/bin/nvim.appimage'
+if [ -f "$NEOVIM_BIN" ]; then
+	alias vim="$NEOVIM_BIN"
+fi
 
 # Handy shortcut to view big folders
 alias size='du --max-depth=1 -h | sort -h'
