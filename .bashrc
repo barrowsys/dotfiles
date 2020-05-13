@@ -32,9 +32,13 @@ fi
 # Aliases {{{
 
 # Set vim to user-installed neovim
-NEOVIM_BIN='~/bin/nvim.appimage'
-if [ -f "$NEOVIM_BIN" ]; then
-	alias vim="$NEOVIM_BIN"
+# Otherwise, system-installed neovim
+USER_NEOVIM_BIN='~/bin/nvim.appimage'
+SYS_NEOVIM_BIN=$(which nvim)
+if [ -f "$USER_NEOVIM_BIN" ]; then
+	alias vim="$USER_NEOVIM_BIN"
+elif [ -f "$SYS_NEOVIM_BIN" ]; then
+	alias vim="$SYS_NEOVIM_BIN"
 fi
 
 # Handy shortcut to view big folders
