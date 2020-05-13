@@ -117,7 +117,7 @@ augroup FTSpecific
 				\ set shiftwidth=4 |
 				\ set softtabstop=-1 |
 				\ set smarttab
-	autocmd BufRead .vimrc,init.vim :setlocal foldmethod=marker
+	autocmd BufRead .bashrc,.vimrc,init.vim :setlocal foldmethod=marker
 augroup END
 
 " End Filetype-Specific Stuff }}}
