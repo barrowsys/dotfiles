@@ -180,7 +180,7 @@ let g:user_emmet_leader_key=''
 
 let g:tmpl_search_paths = ['~/templates']
 
-let g:tmpl_company = "Ezra Barrow"
+let g:tmpl_author_name = "Ezra Barrow"
 let g:tmpl_author_email = "barrow@tilde.team"
 let g:tmpl_license = "GPL-3.0-only"
 

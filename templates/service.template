@@ -1,12 +1,12 @@
 [Unit]
-Description=Service Identifier
+Description={{CURSOR}}
 After=network.target
 
 [Service]
 Type=simple
-User={{NAME}}
+User=(expand("$USER"))
 WorkingDirectory=(getcwd())
-ExecStartPre
+ExecStartPre=
 ExecStart=
 Restart=always
 RestartSec=3
