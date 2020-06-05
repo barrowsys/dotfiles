@@ -1,34 +1,39 @@
-# My stuff {{{
+# Discussion: is there a more proper way to run stuff only if interactive? like .bash_profile or something?
 [[ $- != *i* ]] && return # do nothing if not interactive
+
+# Terminal Settings {{{
 
 # turns off CTRL-S, because, why?
 stty -ixon -ixoff
 
-# set terminal mode to vi
+# set terminal editing mode to vi
 set -o vi
+
+# make "**" in paths work
+shopt -s globstar
 
 # cypher log off
 mesg n
 
-# Add,,, bin(s),,, to path,,, h
-export PATH=$HOME/.local/bin:$PATH
-export PATH=$HOME/bin:$PATH
-
-# set ls defaults
-alias ls='ls -F --color=auto'
-
 # set color prompt
 PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
 
-# Enable completion for stuff like git
-# For some reason this isn't enabled by default on ~team?
-if ! shopt -oq posix; then
-  if [ -f /usr/share/bash-completion/bash_completion ]; then
-    . /usr/share/bash-completion/bash_completion
-  elif [ -f /etc/bash_completion ]; then
-    . /etc/bash_completion
-  fi
-fi
+# History Settings {{{
+
+# Append to the history file and never clear it
+shopt -s histappend
+HISTSIZE=-1
+HISTFILESIZE=-1
+# don't put duplicate lines or lines starting with space in the history.
+HISTCONTROL=ignoreboth
+
+# }}}
+
+# }}}
+
+# Path {{{
+
+export PATH=$HOME/bin:$HOME/.local/bin:$PATH
 
 # Set vim to user-installed neovim
 # Otherwise, system-installed neovim
@@ -47,8 +52,11 @@ alias vim=$EDITOR
 
 # Aliases {{{
 
-# Handy shortcut to view big folders
+# displays the total size of all folders in the working directory, sorted small -> large
 alias size='du --max-depth=1 -h | sort -h'
+
+# ls defaults
+alias ls='ls -F --color=auto'
 
 # }}}
 
@@ -58,6 +66,7 @@ alias size='du --max-depth=1 -h | sort -h'
 # Inspiration: https://github.com/CosineP/dotfiles
 
 # move to directory and list it
+# Discussion: would it be so bad to alias cd to this?
 function cs() {
 	cd "$@" && ls
 }
@@ -67,26 +76,21 @@ function mkcd() {
 	mkdir "$@" && cd "$@"
 }
 
-# End Directories }}}
+# }}}
 
-# End Functions }}}
+# }}}
 
-# Stuff from the defaults {{{
-# don't put duplicate lines or lines starting with space in the history.
-# See bash(1) for more options
-HISTCONTROL=ignoreboth
+# Misc {{{
 
-# append to the history file, don't overwrite it
-shopt -s histappend
+# Enable completion for stuff like git
+# For some reason this isn't enabled by default on ~team?
+# This is a black box yoinked out of the defaults
+if ! shopt -oq posix; then
+  if [ -f /usr/share/bash-completion/bash_completion ]; then
+    . /usr/share/bash-completion/bash_completion
+  elif [ -f /etc/bash_completion ]; then
+    . /etc/bash_completion
+  fi
+fi
 
-# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=1000
-HISTFILESIZE=2000
-
-# If set, the pattern "**" used in a pathname expansion context will
-# match all files and zero or more directories and subdirectories.
-shopt -s globstar
-
-# make less more friendly for non-text input files, see lesspipe(1)
-[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 # }}}

@@ -40,7 +40,7 @@ call plug#end()
 filetype plugin indent on	" tbh dont know what this one does but it's important lol
 syntax on	" Syntax Highlighting
 
-" allow backspacing over everything in insert mode
+" allow backspacing across lines
 set backspace=indent,eol,start
 
 " Add spelling dictionary to completion only if spellcheck is on
@@ -58,6 +58,7 @@ map Q gq
 
 " CTRL-U in insert mode deletes a lot.	Use CTRL-G u to first break undo,
 " so that you can undo CTRL-U after inserting a line break.
+" Discussion: what even is a ctrl-u and why do we care about it.
 inoremap <C-U> <C-G>u<C-U>
 
 " End Basics }}}
@@ -91,6 +92,8 @@ highlight clear SignColumn	" Make gutter blend in
 " ToggleBg() {{{
 function! s:ToggleBg()
 	let &background = ( &background == "dark"? "light" : "dark" )
+	" Discussion: Why is this here? until we know what this does i'm assuming
+	" it's the reason that things break with alternate color schemes
 	if exists("g:colors_name")
 		exe "colorscheme " . g:colors_name
 	endif
@@ -105,12 +108,13 @@ endfunction
 augroup FTSpecific
 	autocmd!
 	" Syntax based folding for rust files, but start completely unfolded
+	" Also, map gq in rust files to RustFmt
 	autocmd BufRead *.rs
 				\ setlocal foldmethod=syntax |
 				\ setlocal foldlevel=100 |
 				\ nnoremap <buffer> gq :RustFmt<Enter>
 	" Indentation Settings (Rust is a meanie and formats to spaces even if you
-	" try to use tabs)
+	" try to use tabs, but hey at least it's standard)
 	autocmd BufRead *.rs
 				\ set expandtab |
 				\ set tabstop=4 |
@@ -141,6 +145,7 @@ nnoremap <C-S> :w<Enter>
 nnoremap z1 :%foldc<Enter>
 
 " \bg to toggle between light and dark background
+" Discussion: having this seperated from the function definition is ugly.
 nmap <Leader>bg :call <SID>ToggleBg()<CR>
 
 " Config Helpers {{{
@@ -151,9 +156,13 @@ nnoremap <leader>rf :e<Enter>
 nnoremap <leader>pi :PlugInstall<Enter>
 " }}}
 
-" " \tg to toggle tagbar
-" nmap <Leader>tg :TagbarToggle<CR>
-
+" Dumb template nonsense {{{
+" in a buffer, surround a vim command with (). Cursor on top, <Leader>re, and
+" it'll be replaced with the output of that command.
+" Example:
+" User=(expand("$USER"))
+"      ^^^^^^^^^^^^^^^^^ cursor here, <leader>re
+" User=barrow
 function RunCommandUnderCursor()
 	execute "normal! ya)"
 	let command = getreg("\"")
@@ -162,15 +171,15 @@ function RunCommandUnderCursor()
 		execute "normal! ca)" . output . "\<Esc>"
 	endif
 endfunction
-
 nmap <Leader>re :call RunCommandUnderCursor()<CR>
+" }}}
 
 " End Keybinds }}}
 
 " Plugin Stuff {{{
 
 " DON'T automatically format rust code on save
-" Instead use the Q binding
+" Instead use the gq/Q binding (see filetype-specific stuff)
 let g:rustfmt_autosave = 0
 
 " Make emmet trigger with <C-y>,
@@ -182,7 +191,7 @@ let g:tmpl_search_paths = ['~/templates']
 
 let g:tmpl_author_name = "Ezra Barrow"
 let g:tmpl_author_email = "barrow@tilde.team"
-let g:tmpl_license = "GPL-3.0-only"
+let g:tmpl_license = "MPL-2.0"
 
 " }}}
 
@@ -194,6 +203,8 @@ let g:airline_powerline_fonts = 1
 " Set theme
 let g:airline_theme='owo'
 let g:airline_skip_empty_sections = 1
+" Example: 79% = 205/258:27
+" where "=" is that little,, almost hamburger button? airline_symbols.linenr
 let g:airline_section_z='%p%% %{g:airline_symbols.linenr}%0l/%L:%v'
 
 " }}}
@@ -224,7 +235,7 @@ let g:coc_snippet_next = '<c-j>'
 let g:coc_snippet_prev = '<c-k>'
 imap <C-j> <Plug>(coc-snippets-expand-jump)
 " }}}
-"inoremap <silent><expr> <c-@> coc#refresh()
+" Discussion: not used, can remove?
 nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
