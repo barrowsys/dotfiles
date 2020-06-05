@@ -4,12 +4,15 @@
 # turns off CTRL-S, because, why?
 stty -ixon -ixoff
 
-# set vim as editor and set terminal mode to vi
-export EDITOR=vim
+# set terminal mode to vi
 set -o vi
 
 # cypher log off
 mesg n
+
+# Add,,, bin(s),,, to path,,, h
+export PATH=$HOME/.local/bin:$PATH
+export PATH=$HOME/bin:$PATH
 
 # set ls defaults
 alias ls='ls -F --color=auto'
@@ -27,19 +30,22 @@ if ! shopt -oq posix; then
   fi
 fi
 
-# }}}
-
-# Aliases {{{
-
 # Set vim to user-installed neovim
 # Otherwise, system-installed neovim
+# And of course, $EDITOR can't be an alias,
+# so we set editor to the binary and alias vim to that
 USER_NEOVIM_BIN='~/bin/nvim.appimage'
 SYS_NEOVIM_BIN=$(which nvim)
 if [ -f "$USER_NEOVIM_BIN" ]; then
-	alias vim="$USER_NEOVIM_BIN"
+	export EDITOR="$USER_NEOVIM_BIN"
 elif [ -f "$SYS_NEOVIM_BIN" ]; then
-	alias vim="$SYS_NEOVIM_BIN"
+	export EDITOR="$SYS_NEOVIM_BIN"
 fi
+alias vim=$EDITOR
+
+# }}}
+
+# Aliases {{{
 
 # Handy shortcut to view big folders
 alias size='du --max-depth=1 -h | sort -h'
