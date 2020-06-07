@@ -56,7 +56,7 @@ alias vim=$EDITOR
 alias size='du --max-depth=1 -h | sort -h'
 
 # ls defaults
-alias ls='ls -F --color=auto'
+alias ls='ls --color=auto'
 
 # }}}
 
