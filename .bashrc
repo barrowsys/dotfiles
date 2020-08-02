@@ -78,6 +78,64 @@ function mkcd() {
 
 # }}}
 
+# ip shorthands {{{
+# because sometimes i just want All the information
+# set the env variable $WORKING_IFACE to avoid retyping its name
+# to show a full list of all devices while $WORKING_IFACE is set, pass -a
+
+# common code
+function _ip_impl() {
+	if [[ "$@" ]]; then
+		if [[ "$@" == "-a" ]]; then
+			# "ipa -a" should be the full list, even if $WORKING_IFACE is set.
+			ip $ip_command
+		else
+			# "ipa arg" should be "ip address show dev arg"
+			ip $ip_command dev "$@"
+		fi
+	elif [[ "$WORKING_IFACE" ]]; then
+		# if $WORKING_IFACE is set and no argument is passed,
+		# check if $WORKING_IFACE exists. If yes, run the command on it.
+		# If no, output a custom error message.
+		if ip link show "$WORKING_IFACE" &>/dev/null; then
+			ip $ip_command dev "$WORKING_IFACE"
+		else
+			echo "Device \"$WORKING_IFACE\" (\$WORKING_IFACE) does not exist."
+			echo "Did you mean to use -a?"
+		fi
+	else
+		# If $WORKING_IFACE is not set and no argument is passed,
+		# run the default full list
+		ip $ip_command
+	fi
+}
+
+# show net addresses
+function ipa() {
+	local ip_command="addr show"
+	_ip_impl $@
+}
+
+# show net links
+function ipl() {
+	local ip_command="link show"
+	_ip_impl $@
+}
+
+# show net routes
+function ipr() {
+	local ip_command="route list"
+	_ip_impl $@
+}
+
+# show net neighbors
+function ipn() {
+	local ip_command="neigh show"
+	_ip_impl $@
+}
+
+# }}}
+
 # }}}
 
 # Misc {{{
