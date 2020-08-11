@@ -58,6 +58,9 @@ alias size='du --max-depth=1 -h | sort -h'
 # ls defaults
 alias ls='ls --color=auto'
 
+# Fullscreen vim help
+alias vimdoc='vim -c :Help'
+
 # }}}
 
 # Functions {{{

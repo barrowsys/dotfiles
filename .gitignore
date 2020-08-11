@@ -5,3 +5,5 @@
 !LICENSE
 !templates
 !templates/**
+!.vim
+!.vim/theme.vim
