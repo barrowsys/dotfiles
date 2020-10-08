@@ -26,7 +26,8 @@
 	Plug 'plasticboy/vim-markdown'
 	Plug 'mattn/emmet-vim'
 	Plug 'wellle/targets.vim'
-	Plug 'tibabit/vim-templates'
+	" Plug 'tibabit/vim-templates'
+	Plug '~/Documents/vim-templates'
 	Plug 'wannesm/wmgraphviz.vim'
 	Plug 'kshenoy/vim-signature'
 	Plug 'morhetz/gruvbox'
@@ -34,6 +35,7 @@
 	Plug 'joshdick/onedark.vim'
 	Plug 'nanotech/jellybeans.vim'
 	Plug 'jonathanfilip/vim-lucius'
+	Plug 'majutsushi/tagbar'
 
 	call plug#end()
 " End Plugins }}}
@@ -46,12 +48,16 @@
 	" Indentation Settings (Tabs only)
 	set noexpandtab tabstop=4 shiftwidth=0 softtabstop=0 smarttab
 	" Toggle mouse support with \m
-	nnoremap <Leader>m :let &mouse = ( &mouse == "" ? "a" : "" )<CR>
+	nnoremap <Leader>mm :let &mouse = ( &mouse == "" ? "a" : "" )<CR>
 	set number rnu ruler showcmd incsearch nobk nowb
 " End Basics }}}
 
-" ~ a e s t h e t i c s ~ "
-source $HOME/.vim/theme.vim
+" Subconfigs {{{
+
+	" ~ a e s t h e t i c s ~ "
+	source $HOME/.vim/theme.vim
+
+" End Subconfigs }}}
 
 " Filetype-Specific Stuff {{{
 	augroup FTSpecific
@@ -119,7 +125,57 @@ source $HOME/.vim/theme.vim
 				exec "undo "..l:undo
 			endtry
 		endfunction
-	" End Formatting }}}
+	" End Marker Folds }}}
+	
+	" ExecBuffer {{{
+		noremap <Leader>@ :let b:execreg_buffer = v:register<CR>:set opfunc=ExecuteReg<CR>g@
+		function! ExecuteText(type)
+			" let l:raddr = b:regreplace_buffer
+			" let l:rdata = getreg(l:raddr)
+			let l:prevreg = getreg('"')
+			if a:0
+				silent exec "normal! `<" . a:type . "`>y"
+			elseif a:type == 'line'
+				silent exec "normal! '[V']y"
+			elseif a:type == 'block'
+				silent exec "normal! `[\<C-V>`]y"
+			else
+				silent exec "normal! `[v`]y"
+			endif
+			silent exec 'normal! :<C-R>"<CR>'
+			silent exec setreg('"', l:prevreg)
+		endfunction
+	" End ExecBuffer }}}
+
+	" Move Register {{{
+		nnoremap <silent> <Leader>mr :let b:movereg_buffer = v:register<CR>:call MoveRegister()<CR>
+		function! MoveRegister()
+			let l:raddr = b:movereg_buffer
+			let l:rdata = getreg(l:raddr)
+			let l:name = input("Register: ")
+			setreg(l:name, l:rdata)
+		endfunction
+	" End Move Register }}}
+
+	" List Bindings {{{
+		let g:bindings = {}
+		command! Binds :call Bindings()
+		function! Bindings()
+			let l:keys = keys(g:bindings)
+			let l:key = inputlist(l:keys)
+		endfunction
+		function! s:Bind(category, name, description)
+			if !has_key(g:bindings, a:category)
+				let g:bindings[a:category] = {}
+			endif
+			let g:bindings[a:category][a:name] = a:description
+		endfunction
+		call s:Bind("test", "", "")
+		call s:Bind("yeeting", "", "")
+		call s:Bind("yoinking", "", "")
+		call s:Bind("yateing", "", "")
+		call s:Bind("testifying", "", "")
+	" End List Bindings }}}
 
 " End Functions }}}
 
@@ -128,10 +184,25 @@ source $HOME/.vim/theme.vim
 	" Ctrl-S to save
 	nnoremap <C-S> :w<CR>
 
+	" F8 to toggle tagbar
+	nnoremap <F8> :TagbarToggle<CR>
+
+	" Leader-w to toggle wrapping
+	nnoremap <silent> <Leader>w :set wrap!<CR>
+
+	" Vim-Endwise {{{
+		" Disable endwise mappings
+		let g:endwise_no_mappings = 1
+		" Remap <C-X><CR> manually
+		imap <C-X><CR> <CR><C-R>=EndwiseAlways()<CR>
+		" Do not map <CR>, see coc <CR> binding below
+	" End Vim-Endwise }}}
+
 	" Folds {{{
 		" z1 to interact with only the top layer of folds
 		nnoremap z1c :%foldc<CR>
 		nnoremap z1o :%foldo<CR>
+		nnoremap <Leader>z1 :set foldlevel=1<CR>
 		" next and previous folds as motions,, now in arrow keys
 		nnoremap z<Down> zj
 		nnoremap z<Up> zk
@@ -149,7 +220,7 @@ source $HOME/.vim/theme.vim
 
 	" Config Helpers {{{
 		" \rc to reload vimrc and \rf to reload the open file
-		nnoremap <leader>rc :so $MYVIMRC<CR>:do User ReloadConfig<CR>
+		nnoremap <leader>rc :so $MYVIMRC<CR>
 		nnoremap <leader>rf :e<CR>
 		" \pi to install plugins, \pc to clean
 		nnoremap <leader>pi :PlugInstall<CR>
@@ -179,44 +250,48 @@ source $HOME/.vim/theme.vim
 	let g:user_emmet_leader_key=''
 
 	" Templates {{{
-		" Discussion: this is nonsense lol. we could remove this any time.
-
 		let g:tmpl_search_paths = ['~/templates']
 
 		let g:tmpl_author_name = "Ezra Barrow"
 		let g:tmpl_author_email = "barrow@tilde.team"
-		let g:tmpl_license = "MPL-2.0"
+		let g:tmpl_license = "MIT"
 	" }}}
 
 	" COC Settings {{{
 
 		" Completion Bindings {{{
+			function! s:check_back_space() abort
+				let col = col('.') - 1
+				return !col || getline('.')[col - 1]	=~# '\s'
+			endfunction
 			" map ctrl-space to do completion
 			inoremap <silent><expr> <c-space> coc#refresh()
 			" Tab opens completion, as well as cycling thru it (shift tab goes back)
 			inoremap <silent><expr> <TAB>
 				\ pumvisible() ? "\<C-n>" :
 				\ <SID>check_back_space() ? "\<TAB>" :
+				\ coc#jumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
 				\ coc#refresh()
 			inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
-			function! s:check_back_space() abort
-				let col = col('.') - 1
-				return !col || getline('.')[col - 1]	=~# '\s'
-			endfunction
+			inoremap <expr><script><CR>
+				\ pumvisible() ? "\<C-y>" :
+				\ "\<CR><C-R>=EndwiseDiscretionary()<CR>"
+				" ^ Include endwise trigger
 		" }}}
 
 		nmap <silent> gd <Plug>(coc-definition)
 		nmap <leader>rn <Plug>(coc-rename)
-		" Snippets {{{
-			imap <C-l> <Plug>(coc-snippets-expand)
-			let g:coc_snippet_next = '<c-j>'
-			let g:coc_snippet_prev = '<c-k>'
-			imap <C-j> <Plug>(coc-snippets-expand-jump)
-		" }}}
-		" Discussion: not used, can remove?
 		nmap <silent> gy <Plug>(coc-type-definition)
 		nmap <silent> gi <Plug>(coc-implementation)
 		nmap <silent> gr <Plug>(coc-references)
+
+		" Snippets {{{
+			" inoremap <silent><expr> <C-l> coc#rpc#request('doKeymap', ['snippets-expand-jump',''])
+			" imap <silent><expr><C-l> \<Plug>(coc-snippets-expand)
+			let g:coc_snippet_next = '<tab>'
+			let g:coc_snippet_prev = '<s-tab>'
+			" imap <C-j> \<Plug>(coc-snippets-expand-jump)
+		" }}}
 
 		" Show Documentation with K {{{
 			function! s:show_documentation()
@@ -233,4 +308,35 @@ source $HOME/.vim/theme.vim
 	" End COC Settings }}}
 " End Plugin Stuff }}}
 
+" WIP {{{
+delfunction! PrettyUnfold
+
+function PrettyUnfold()
+let start = nvim_buf_get_mark(0, "<")
+let end = nvim_buf_get_mark(0, ">")
+echo start end
+if start[0] != end[0]
+	echom "ERROR: selection spans multiple lines"
+	return
+endif
+let start_cursor = nvim_win_get_cursor(0)
+set virtualedit=all
+norm! g$
+let buffer_width = virtcol(".")
+echom buffer_width
+set virtualedit&
+let line = nvim_buf_get_lines(0, start[0]-1, end[0], 0)[0]
+call nvim_win_set_cursor(0, start)
+let line1 = strcharpart(line, 0, start[1])
+let line2 = strcharpart(line, start[1], end[1]-start[1]+1)
+let line3 = strcharpart(line, end[1]+1)
+let lines = []
+call add(lines, printf("%-*s", buffer_width, line1))
+call add(lines, printf("	%-*s", buffer_width, line2))
+call add(lines, printf("%-*s", buffer_width, line3))
+let b:ns_id = nvim_create_namespace("")
+call nvim_buf_set_lines(0, end[0]-1, end[0], 0, [join(lines, "")])
+call nvim_win_set_cursor(0, start_cursor)
+endfunction
+" End WIP }}}
 
