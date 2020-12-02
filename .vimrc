@@ -103,7 +103,7 @@
 	" End cr{motion} Change/Replace }}}
 
 	" Marker Folds {{{
-		" Surrounds a given text linewise with triple {} fold points.
+		" Surrounds a given text linewise with commented-out triple {} fold points.
 		" :set foldmethod=marker babeyyyyy
 		nnoremap ysm :set opfunc=FoldIn<CR>g@
 		vnoremap Sm :<C-U>call FoldIn(visualmode())<CR>
@@ -118,8 +118,10 @@
 					let l:endline = line("']")
 				endif
 				let l:name = input("Name: ")
-				call append(l:startline-1, [join(['"', l:name, repeat('{', 3)], ' ')])
-				call append(l:endline+1, [join(['"', 'End', l:name, repeat('}', 3)], ' ')])
+				let l:commentstring = get(b:, 'commentary_format', substitute(substitute(substitute(
+							\ &commentstring, '^$', '%s', ''), '\S\zs%s',' %s', '') ,'%s\ze\S', '%s ', ''))
+				call append(l:startline-1, [substitute(l:commentstring, '%s', join([l:name, repeat('{', 3)], ' '), '')])
+				call append(l:endline+1, [substitute(l:commentstring, '%s', join(['End', l:name, repeat('}', 3)], ' '), '')])
 			catch
 				echoe "Exception!" v:exception
 				exec "undo "..l:undo
@@ -189,6 +191,10 @@
 
 	" Leader-w to toggle wrapping
 	nnoremap <silent> <Leader>w :set wrap!<CR>
+
+	" Leader-hll to highlight current line
+	nnoremap <silent> <Leader>hll :exe "let m = matchadd('ColorColumn', '\\%" . line('.') . "l')"<CR>
+	nnoremap <silent> <Leader>hlc :call clearmatches()<CR>
 
 	" Vim-Endwise {{{
 		" Disable endwise mappings

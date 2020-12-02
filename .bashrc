@@ -65,6 +65,15 @@ alias vimdoc='vim -c :Help'
 
 # Functions {{{
 
+function autoclick() {
+	local seconds="${1:-30}"
+	local cps="${2:-80}"
+	local delay=$((1000 / cps))
+	local clicks=$((seconds * cps))
+	# echo Seconds $seconds Delay $delay Clicks $clicks
+	xdotool click --delay $delay --repeat $clicks 1
+}
+
 # Directories {{{
 # Inspiration: https://github.com/CosineP/dotfiles
 

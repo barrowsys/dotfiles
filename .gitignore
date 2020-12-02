@@ -7,3 +7,6 @@
 !templates/**
 !.vim
 !.vim/theme.vim
+!bin
+bin/*
+!bin/bache

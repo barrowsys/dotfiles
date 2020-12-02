@@ -1,0 +1,43 @@
+#!/bin/bash
+###############################################################
+# THIS FILE IS LICENSED UNDER GPL-3.0-only                    #
+# THE FOLLOWING MESSAGE IS NOT A LICENSE                      #
+#                                                             #
+# <barrow@tilde.team> wrote this file.                        #
+# by reading this message, you are reading "TRANS RIGHTS".    #
+# this file and the content within it is the queer agenda.    #
+# if we meet some day, and you think this stuff is worth it,  #
+# you can buy me a beer, tea, or something stronger.          #
+# -Ezra Barrow                                                #
+###############################################################
+# bache                                                       #
+# a bash cache to cache your bash!                            #
+#                                                             #
+# when writing a unix pipeline that processes the output      #
+# of a long running command, surround that command with       #
+# single quotes and put "bache" in front of it.               #
+# it will run once and save the output to a file in /tmp,     #
+# caching it for the next execution, leaving you free to      #
+# experiment with the rest of the pipeline. just be sure to   #
+# remove the bache command when you're done experimenting!    #
+#                                                             #
+# you can get a new cached result with the second argument.   #
+# default is 0, so bache 'command' 1 will give you a new      #
+# cached result, bache 'command' 2 will give another, etc.    #
+#                                                             #
+# Examples                                                    #
+# find / -type f -name "*.html" | wc -l                       #
+# ^ long running command ^        ^ quick processing          #
+# bache 'find / -type f -name "*.html"' | wc -l               #
+#       ^ output is cached ^            free to experiment ^  #
+# bache 'find / -type f -name "*.html"' 1 | wc -l             #
+#            get a new result from find ^                     #
+###############################################################
+
+i="${2:-0}" # 2nd argument (default 0)
+FILE="/tmp/`basenc --base64url <<< \"$1\"`.$i" # /tmp/base64.$i
+if [ -f "$FILE" ]; then # if file exists and is a file
+	cat "$FILE"
+else
+	eval "$1" | tee "$FILE"
+fi
