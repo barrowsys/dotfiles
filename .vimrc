@@ -36,6 +36,8 @@
 	Plug 'nanotech/jellybeans.vim'
 	Plug 'jonathanfilip/vim-lucius'
 	Plug 'majutsushi/tagbar'
+    " Plug 'severin-lemaignan/vim-minimap'
+	Plug 'dhruvasagar/vim-table-mode'
 
 	call plug#end()
 " End Plugins }}}
@@ -46,9 +48,10 @@
 	set backspace=indent,eol,start " allow backspacing across lines
 	set complete=.,w,b,u,t,i,kspell " Add spelling dictionary to completion only if spellcheck is on
 	" Indentation Settings (Tabs only)
-	set noexpandtab tabstop=4 shiftwidth=0 softtabstop=0 smarttab
+	set noexpandtab tabstop=4 shiftwidth=4 softtabstop=0 smarttab
 	" Toggle mouse support with \m
 	nnoremap <Leader>mm :let &mouse = ( &mouse == "" ? "a" : "" )<CR>
+    set mouse=a
 	set number rnu ruler showcmd incsearch nobk nowb
 " End Basics }}}
 
@@ -238,7 +241,41 @@
 " Commands {{{
 
 	" vim -c :Help starts a fullscreen help
-	command! -bar Help :tab help | :tabonly
+	command! Help :tab help | :tabonly
+
+	" Indent Config {{{
+		command! -nargs=? -complete=custom,s:IndentArgs SpacesOnly call s:IndentConfig(1, <q-args>)
+		command! -nargs=? -complete=custom,s:IndentArgs TabsOnly call s:IndentConfig(0, <q-args>)
+
+		function! s:IndentConfig(mode, width)
+			let width = str2nr(a:width)
+			if a:mode
+				set expandtab
+				if width != 0
+					let &shiftwidth = width
+				endif
+				echom "Indent Mode: " . &shiftwidth . " spaces"
+			else
+				set noexpandtab
+				if width != 0
+					let &tabstop = width
+				endif
+				echom "Indent Mode: " . &tabstop . "-wide tabs"
+			endif
+		endfunction
+
+		function! s:IndentArgs(ArgLead, CmdLine, CursorPos)
+			let mlist = matchlist(a:CmdLine, '^\(Tabs\|Spaces\)Only *$')
+			if len(mlist) >= 2
+				if mlist[1] == "Tabs"
+					return &tabstop
+				elseif mlist[1] == "Spaces"
+					return &shiftwidth
+				endif
+			endif
+			return ""
+		endfunction
+	" End Indent Config }}}
 
 " End Commands }}}
 

@@ -1,6 +1,7 @@
 # Discussion: is there a more proper way to run stuff only if interactive? like .bash_profile or something?
 [[ $- != *i* ]] && return # do nothing if not interactive
 
+
 # Terminal Settings {{{
 
 # turns off CTRL-S, because, why?
@@ -34,6 +35,8 @@ HISTCONTROL=ignoreboth
 # Path {{{
 
 export PATH=$HOME/bin:$HOME/.local/bin:$PATH
+export STAGING_DIR="/home/barrow/Documents/openwrt/staging_dir"
+export PATH="/home/barrow/Documents/openwrt/staging_dir/toolchain-mips_24kc_gcc-8.4.0_musl/bin:$PATH"
 
 # Set vim to user-installed neovim
 # Otherwise, system-installed neovim
@@ -60,6 +63,14 @@ alias ls='ls --color=auto'
 
 # Fullscreen vim help
 alias vimdoc='vim -c :Help'
+
+# todo.sh config
+export TODOTXT_DEFAULT_ACTION=ls
+alias t='todo.sh'
+
+# Useful alias for building rust projects
+alias cargow='cargo watch -x "check --all-targets --all-features" -x "build --all-targets --all-features" -x "clippy -Z unstable-options --all-targets --all-features -- -D warnings"'
+alias cargowf='cargo watch -x "check --all-targets --all-features" -x "build --all-targets --all-features" -x "clippy -Z unstable-options --all-targets --all-features -- -D warnings" -x "fmt"'
 
 # }}}
 

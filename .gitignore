@@ -3,6 +3,7 @@
 !.gitignore
 !.vimrc
 !LICENSE
+!barrow_rust.yml
 !templates
 !templates/**
 !.vim
