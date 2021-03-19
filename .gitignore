@@ -11,3 +11,5 @@
 !bin
 bin/*
 !bin/bache
+!bin/yakuake
+bin/yakuake/sessionid.tmp
