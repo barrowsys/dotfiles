@@ -1,6 +1,6 @@
 #!/bin/bash
 ###############################################################
-# THIS FILE IS LICENSED UNDER MIT                             #
+# THIS FILE IS LICENSED UNDER GPL-3.0-only                    #
 # THE FOLLOWING MESSAGE IS NOT A LICENSE                      #
 #                                                             #
 # <barrow@tilde.team> wrote this file.                        #
