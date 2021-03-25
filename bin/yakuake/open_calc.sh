@@ -16,7 +16,7 @@ touch "$SID"
 CALC_SESSION=$(cat $SID)
 CALC_TERM=`qdbus org.kde.yakuake /yakuake/sessions org.kde.yakuake.terminalIdsForSessionId $CALC_SESSION`
 CALC_TITLE=`qdbus org.kde.yakuake /yakuake/tabs org.kde.yakuake.tabTitle $CALC_SESSION`
-if [[ CALC_TITLE != "Calculator" ]]; then
+if [[ $CALC_TITLE != "Calculator" ]]; then
 	$HOME/bin/yakuake/setup.sh
 	CALC_SESSION=$(cat $SID)
 fi

@@ -71,6 +71,9 @@ alias t='todo.sh'
 # Useful alias for building rust projects
 alias cargow='cargo watch -x "check --all-targets --all-features" -x "build --all-targets --all-features" -x "clippy -Z unstable-options --all-targets --all-features -- -D warnings"'
 alias cargowf='cargo watch -x "check --all-targets --all-features" -x "build --all-targets --all-features" -x "clippy -Z unstable-options --all-targets --all-features -- -D warnings" -x "fmt"'
+alias cargowft='cargo watch -x "check --all-targets --all-features" -x "build --all-targets --all-features" -x "clippy -Z unstable-options --all-targets --all-features -- -D warnings" -x "fmt" -x "test --all-features"'
+alias cargowftd='cargo watch -x "check --all-targets --all-features" -x "build --all-targets --all-features" -x "clippy -Z unstable-options --all-targets --all-features -- -D warnings" -x "fmt" -x "test --all-features" -x "doc --all-features"'
+alias cargowfdt='cargo watch -x "check --all-targets --all-features" -x "build --all-targets --all-features" -x "clippy -Z unstable-options --all-targets --all-features -- -D warnings" -x "fmt" -x "doc --all-features" -x "test --all-features"'
 
 # }}}
 

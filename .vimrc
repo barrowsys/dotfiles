@@ -38,6 +38,7 @@
 	Plug 'majutsushi/tagbar'
     " Plug 'severin-lemaignan/vim-minimap'
 	Plug 'dhruvasagar/vim-table-mode'
+    Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
 
 	call plug#end()
 " End Plugins }}}
@@ -199,6 +200,12 @@
 	nnoremap <silent> <Leader>hll :exe "let m = matchadd('ColorColumn', '\\%" . line('.') . "l')"<CR>
 	nnoremap <silent> <Leader>hlc :call clearmatches()<CR>
 
+	" Convenience for navigating the quickfix list (i think?)
+	nnoremap <silent> ]c :cnext<CR>
+	nnoremap <silent> [c :cprev<CR>
+	nnoremap <silent> <Leader>[c :cfirst<CR>
+	nnoremap <silent> <Leader>]c :clast<CR>
+
 	" Vim-Endwise {{{
 		" Disable endwise mappings
 		let g:endwise_no_mappings = 1
@@ -277,6 +284,38 @@
 		endfunction
 	" End Indent Config }}}
 
+	" Per-Buffer g:tmpl_project {{{
+		function! SetBufferProj()
+			" echom '% = ' . expand('%')
+			" echom '%:p = ' . expand('%:p')
+			" echom '%:p:h = ' . expand('%:p:h')
+			" echom '%:p:h:t = ' . expand('%:p:h:t')
+			let l:cargo_toml_path = expand('%:p:h') . "/Cargo.toml"
+			" echom '%:p:h/Cargo.toml = ' . l:cargo_toml_path
+			if filereadable(l:cargo_toml_path)
+				let b:project_name = expand('%:p:h:t')
+				let g:tmpl_project = b:project_name
+			endif
+		endfunction
+		function! SetTmplProj()
+			if exists("b:project_name")
+				let g:tmpl_project = b:project_name
+			elseif exists("g:tmpl_project")
+				unlet g:tmpl_project
+			endif
+		endfunction
+		" function! UnsetTmplProj()
+		" 	unlet g:tmpl_project
+		" endfunction
+		augroup TmplProjControls
+			autocmd!
+			autocmd BufNewFile,BufReadPost,BufFilePost,FileReadPost *
+					\ call SetBufferProj()
+			autocmd BufEnter,BufWinEnter *
+				\ call SetTmplProj()
+		augroup END
+	" End Per-Buffer g:tmpl_project }}}
+
 " End Commands }}}
 
 " Plugin Stuff {{{
@@ -291,6 +330,9 @@
 	" The default is <C-y> but thats the binding to scroll the buffer upwards
 	" without changing ur cursor position
 	let g:user_emmet_leader_key=''
+
+    " Make iamcco/markdown-preview.nvim use firefox
+    let g:mkdp_browser='firefox'
 
 	" Templates {{{
 		let g:tmpl_search_paths = ['~/templates']

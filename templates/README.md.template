@@ -1,0 +1,20 @@
+# {{PROJECT}}
+
+[![GitHub last commit](https://img.shields.io/github/last-commit/{{GH_USER}}/{{GH_REPO}})](https://github.com/{{GH_USER}}/{{GH_REPO}})
+[![Crates.io](https://img.shields.io/crates/v/{{PROJECT}})](https://crates.io/crates/{{PROJECT}}/)
+[![Docs.rs](https://docs.rs/{{PROJECT}}/badge.svg)](https://docs.rs/{{PROJECT}})
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+
+## About
+
+<!-- what this project is for and what it does -->{{CURSOR}}
+
+## Usage
+
+Add to your Cargo.toml:
+```
+[dependencies]
+{{PROJECT}} = "0.1.0"
+```
+See [docs.rs](https://docs.rs/{{PROJECT}}) for examples.
+
