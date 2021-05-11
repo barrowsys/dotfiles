@@ -1,6 +1,9 @@
 #!/bin/bash
 ###############################################################
-# THIS FILE IS LICENSED UNDER GPL-3.0-only                    #
+# THIS FILE IS LICENSED UNDER THE FOLLOWING TERMS             #
+#                                                             #
+# this code may not be used for any purpose. be gay, do crime #
+#                                                             #
 # THE FOLLOWING MESSAGE IS NOT A LICENSE                      #
 #                                                             #
 # <barrow@tilde.team> wrote this file.                        #
@@ -13,6 +16,7 @@
 
 CALC_PREAMBLE=$(cat <<EOF
 from datetime import datetime, timedelta
+from math import *
 def now():
     return datetime.now()
 print('== Quick Reference ==')
