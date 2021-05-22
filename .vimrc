@@ -17,12 +17,12 @@
 	Plug 'tpope/vim-commentary'
 	Plug 'tpope/vim-fugitive'
 	Plug 'tpope/vim-repeat'
-	Plug 'neoclide/coc.nvim', {'branch': 'release'}
+	Plug 'neoclide/coc.nvim', { 'branch': 'release' }
 	Plug 'honza/vim-snippets/'
 	Plug 'bling/vim-bufferline'
 	Plug 'itchyny/lightline.vim'
 	Plug 'scrooloose/syntastic'
-	Plug 'godlygeek/tabular'
+	Plug 'godlygeek/tabular' 
 	Plug 'plasticboy/vim-markdown'
 	Plug 'mattn/emmet-vim'
 	Plug 'wellle/targets.vim'
@@ -191,7 +191,16 @@
 	nnoremap <C-S> :w<CR>
 
 	" F8 to toggle tagbar
-	nnoremap <F8> :TagbarToggle<CR>
+	nnoremap <silent> <F8> :TagbarToggle<CR>
+
+	" F10 to clear highlight
+	nnoremap <silent> <F10> :nohl<CR>
+
+	" Leader-rh to toggle rust-analyzer type hints
+	nnoremap <silent> <Leader>rh :CocCommand rust-analyzer.toggleInlayHints<CR>
+	" Leader-j to join lines with rust-analyzer
+	nnoremap <silent> <Leader>j :CocCommand rust-analyzer.joinLines<CR>
+	vnoremap <silent> <Leader>j :CocCommand rust-analyzer.joinLines<CR>
 
 	" Leader-w to toggle wrapping
 	nnoremap <silent> <Leader>w :set wrap!<CR>
@@ -205,6 +214,23 @@
 	nnoremap <silent> [c :cprev<CR>
 	nnoremap <silent> <Leader>[c :cfirst<CR>
 	nnoremap <silent> <Leader>]c :clast<CR>
+    " Toggle quickfix list {{{
+		nnoremap <silent> <F9> :CToggle<CR>
+        command! -nargs=0 CToggle call s:ToggleCList()
+        function! s:ToggleCList()
+            if empty(filter(getwininfo(), 'v:val.quickfix'))
+                copen
+            else
+                cclose
+            endif
+        endfunction
+    " End Toggle quickfix list }}}
+
+	" Convenience for navigating the location list (i think?)
+	nnoremap <silent> ]l :lnext<CR>
+	nnoremap <silent> [l :lprev<CR>
+	nnoremap <silent> <Leader>[l :lfirst<CR>
+	nnoremap <silent> <Leader>]l :llast<CR>
 
 	" Vim-Endwise {{{
 		" Disable endwise mappings
@@ -249,6 +275,22 @@
 
 	" vim -c :Help starts a fullscreen help
 	command! Help :tab help | :tabonly
+
+    " Todo List {{{
+        command! -nargs=0 Todo call s:LoadTodoList()
+        function! s:LoadTodoList()
+            " Nabbed from https://stackoverflow.com/a/271709
+            let all = range(1, bufnr('$'))
+            let res = []
+            for b in all
+                if buflisted(b)
+                    call add(res, bufname(b))
+                endif
+            endfor
+            " echom string(res)
+            exec 'vimgrep /TODO/ '.join(res, ' ')
+        endfunction
+    " End Todo List }}}
 
 	" Indent Config {{{
 		command! -nargs=? -complete=custom,s:IndentArgs SpacesOnly call s:IndentConfig(1, <q-args>)
@@ -369,6 +411,7 @@
 		nmap <silent> gy <Plug>(coc-type-definition)
 		nmap <silent> gi <Plug>(coc-implementation)
 		nmap <silent> gr <Plug>(coc-references)
+        nmap <leader>a :CocAction<CR>
 
 		" Snippets {{{
 			" inoremap <silent><expr> <C-l> coc#rpc#request('doKeymap', ['snippets-expand-jump',''])

@@ -1,6 +1,6 @@
 " I think these two enable true color in terminal,, or something
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
-set termguicolors
+" set termguicolors
 
 set background=dark
 set noshowmode " Dont show --INSERT-- --NORMAL-- etc in the command line,, we have it in the statusline

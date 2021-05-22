@@ -34,9 +34,9 @@ HISTCONTROL=ignoreboth
 
 # Path {{{
 
-export PATH=$HOME/bin:$HOME/.local/bin:$PATH
+export PATH=$HOME/bin:$HOME/.local/bin:$HOME/Apps/arduino/bin:$PATH
 export STAGING_DIR="/home/barrow/Documents/openwrt/staging_dir"
-export PATH="/home/barrow/Documents/openwrt/staging_dir/toolchain-mips_24kc_gcc-8.4.0_musl/bin:$PATH"
+# export PATH="/home/barrow/Documents/openwrt/staging_dir/toolchain-mips_24kc_gcc-8.4.0_musl/bin:$PATH"
 
 # Set vim to user-installed neovim
 # Otherwise, system-installed neovim
@@ -57,6 +57,7 @@ alias vim=$EDITOR
 
 # displays the total size of all folders in the working directory, sorted small -> large
 alias size='du --max-depth=1 -h | sort -h'
+alias hr='numfmt --to=iec --suffix=B'
 
 # ls defaults
 alias ls='ls --color=auto'
