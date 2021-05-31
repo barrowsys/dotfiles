@@ -89,6 +89,31 @@ function autoclick() {
 	xdotool click --delay $delay --repeat $clicks 1
 }
 
+	# FD Pipes {{{
+		# mkfd 9
+		# mkfd 10
+		# cat test1 >&9
+		# cat test2 >&10
+		# difffd 9 10
+		function mkfd {
+			# use a fifo
+			# FD_FILE=`mktemp -u`
+			# mkfifo $FD_FILE
+
+			# use a regular file
+			FD_FILE=`mktemp`
+
+			export FD$1=$FD_FILE
+			eval "exec $1<>$FD_FILE"
+		}
+		function fd {
+			echo "/dev/fd/$1"
+		}
+		function difffd {
+			diff ${@:1:$#-2} "/dev/fd/${@: -2:1}" "/dev/fd/${@: -1:1}"
+		}
+	# End FD Pipes }}}
+
 # Directories {{{
 # Inspiration: https://github.com/CosineP/dotfiles
 

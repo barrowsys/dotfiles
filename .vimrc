@@ -26,6 +26,7 @@
 	Plug 'plasticboy/vim-markdown'
 	Plug 'mattn/emmet-vim'
 	Plug 'wellle/targets.vim'
+	Plug 'preservim/nerdtree'
 	" Plug 'tibabit/vim-templates'
 	Plug '~/Documents/vim-templates'
 	Plug 'wannesm/wmgraphviz.vim'
@@ -49,7 +50,9 @@
 	set backspace=indent,eol,start " allow backspacing across lines
 	set complete=.,w,b,u,t,i,kspell " Add spelling dictionary to completion only if spellcheck is on
 	" Indentation Settings (Tabs only)
-	set noexpandtab tabstop=4 shiftwidth=4 softtabstop=0 smarttab
+	if !exists("b:indent_config") && !exists("b:default_indent_config")
+		set noexpandtab tabstop=4 shiftwidth=4 softtabstop=0 smarttab
+	endif
 	" Toggle mouse support with \m
 	nnoremap <Leader>mm :let &mouse = ( &mouse == "" ? "a" : "" )<CR>
     set mouse=a
@@ -74,12 +77,9 @@
 					\ nnoremap <buffer> gq :RustFmt<CR>
 		" Indentation Settings (Rust is a meanie and formats to spaces even if you
 		" try to use tabs, but hey at least it's standard)
-		autocmd BufRead *.rs
-					\ set expandtab |
-					\ set tabstop=4 |
-					\ set shiftwidth=4 |
-					\ set softtabstop=-1 |
-					\ set smarttab
+		autocmd BufRead *.rs DefaultSpacesOnly 4
+		autocmd BufRead *.c,*.h,*.cpp,*.ino DefaultTabsOnly 8
+		autocmd BufRead Makefile,.bashrc,.vimrc,*.vim DefaultTabsOnly 4
 		autocmd BufRead .bashrc,.vimrc,*.vim :setlocal foldmethod=marker
 	augroup END
 " End Filetype-Specific Stuff }}}
@@ -256,9 +256,60 @@
 		" Switch buffers quickly a la tpope/vim-unimpaired
 		nnoremap <silent> ]b :bnext!<CR>
 		nnoremap <silent> [b :bprevious!<CR>
+		nnoremap <silent> <Leader>[b :bfirst!<CR>
+		nnoremap <silent> <Leader>]b :blast!<CR>
 		" Close buffer
-		nnoremap <silent> -b :bd<CR>
+		nnoremap <silent> -b :Bclose<CR>
+		command! -bang -complete=buffer -nargs=? Bclose call s:Bclose(<q-bang>, <q-args>)
+		function! s:Bclose(bang, buffer)
+			if empty(a:buffer)
+				let btarget = bufnr('%')
+			elseif a:buiffer =~ '^\d\+$'
+				let btarget = bufnr(str2nr(a:buffer))
+			else
+				let btarget = bufnr(a:buffer)
+			endif
+			if btarget < 0
+				echomsg 'No matching buffer for '.a:buffer
+				return
+			endif
+			if empty(a:bang) && getbufvar(btarget, '&modified')
+				echomsg 'No write since last change for buffer '.btarget
+				return
+			endif
+			let wnums = filter(range(1, winnr('$')), 'winbufnr(v:val) == btarget')
+			let wcurrent = winnr()
+			for w in wnums
+				execute w.'wincmd w'
+				let prevbuf = bufnr('#')
+				if prevbuf > 0 && buflisted(prevbuf) && prevbuf != btarget
+					buffer #
+				else
+					bprevious
+				endif
+				if btarget == bufnr('%')
+					let blisted = filter(range(1, bufnr('$')), 'buflisted(v:val) && v:val != btarget')
+					let bhidden = filter(copy(blisted), 'bufwinnr(v:val) < 0')
+					let bjump = (bhidden + blisted + [-1])[0]
+					if bjump > 0
+						execute 'buffer '.bjump
+					else
+						execute 'enew'.a:bang
+					endif
+				endif
+			endfor
+			execute 'bdelete'.a:bang.' '.btarget
+			execute wcurrent.'wincmd w'
+		endfunction
 	" End Buffers }}}
+
+	" Tabs {{{
+		nnoremap <silent> ]t :tabnext<CR>
+		nnoremap <silent> [t :tabprevious<CR>
+		nnoremap <silent> <Leader>[t :tabfirst<CR>
+		nnoremap <silent> <Leader>]t :tablast<CR>
+		nnoremap <silent> -t :tabclose<CR>
+	" End Tabs }}}
 
 	" Config Helpers {{{
 		" \rc to reload vimrc and \rf to reload the open file
@@ -295,21 +346,43 @@
 	" Indent Config {{{
 		command! -nargs=? -complete=custom,s:IndentArgs SpacesOnly call s:IndentConfig(1, <q-args>)
 		command! -nargs=? -complete=custom,s:IndentArgs TabsOnly call s:IndentConfig(0, <q-args>)
+		command! -nargs=? -complete=custom,s:IndentArgs DefaultSpacesOnly call s:DefaultIndentConfig(1, <q-args>)
+		command! -nargs=? -complete=custom,s:IndentArgs DefaultTabsOnly call s:DefaultIndentConfig(0, <q-args>)
+		command! -nargs=? -complete=custom,s:IndentArgs DefaultIndent call s:ResetDefaultIndent()
+
+		function! s:ResetDefaultIndent()
+			if exists("b:indent_config") && exists("b:default_indent_config")
+				unlet b:indent_config
+				call s:IndentConfig(b:default_indent_config['mode'], b:default_indent_config['width'])
+			endif
+		endfunction
+
+		function! s:DefaultIndentConfig(mode, width)
+			let b:default_indent_config = {'mode': a:mode, 'width': a:width}
+			if !exists("b:indent_config")
+				call s:IndentConfig(b:default_indent_config['mode'], b:default_indent_config['width'])
+			else
+				call s:IndentConfig(b:indent_config['mode'], b:indent_config['width'])
+			endif
+		endfunction
 
 		function! s:IndentConfig(mode, width)
-			let width = str2nr(a:width)
+			let b:indent_config = {'mode': a:mode, 'width': a:width}
+			let l:width = str2nr(a:width)
 			if a:mode
 				set expandtab
-				if width != 0
-					let &shiftwidth = width
+				if l:width != 0
+					let &tabstop = l:width
+					let &shiftwidth = l:width
 				endif
-				echom "Indent Mode: " . &shiftwidth . " spaces"
+				" echom "Indent Mode: " . &shiftwidth . " spaces"
 			else
 				set noexpandtab
-				if width != 0
-					let &tabstop = width
+				if l:width != 0
+					let &tabstop = l:width
+					let &shiftwidth = l:width
 				endif
-				echom "Indent Mode: " . &tabstop . "-wide tabs"
+				" echom "Indent Mode: " . &tabstop . "-wide tabs"
 			endif
 		endfunction
 
