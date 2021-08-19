@@ -204,3 +204,10 @@ if ! shopt -oq posix; then
 fi
 
 # }}}
+
+if [[ "$TERM" == "xterm-kitty" ]]; then
+	# neofetch --kitty --source '/home/barrow/Pictures/profile pics/bill cypher banner.png'
+	alias NEOFETCH='neofetch --kitty --source "/home/barrow/Pictures/neofetch images/"'
+	neofetch --kitty --source '/home/barrow/Pictures/neofetch images/'
+	# neofetch --kitty --source '/home/barrow/Pictures/most important images/daily affirmations/'
+fi

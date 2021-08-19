@@ -40,6 +40,9 @@
     " Plug 'severin-lemaignan/vim-minimap'
 	Plug 'dhruvasagar/vim-table-mode'
     Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
+	Plug 'freitass/todo.txt-vim'
+	Plug 'leafgarland/typescript-vim'
+	Plug 'peitalin/vim-jsx-typescript'
 
 	call plug#end()
 " End Plugins }}}
@@ -90,6 +93,7 @@
 		" replace text with the contents of a register,,
 		" leaving the register intact
 		nnoremap <silent> cr :let b:regreplace_buffer = v:register<CR>:set opfunc=RegReplace<CR>g@
+		vnoremap <silent> Cr :let b:regreplace_buffer = v:register<CR>:set opfunc=RegReplace<CR>g@
 		function! RegReplace(type)
 			let l:raddr = b:regreplace_buffer
 			let l:rdata = getreg(l:raddr)
@@ -105,6 +109,16 @@
 			call setreg(l:raddr, l:rdata)
 		endfunction
 	" End cr{motion} Change/Replace }}}
+
+	" SearchSelection {{{
+		" TODO:
+		" nnoremap <silent> <Leader>/ :set opfunc=SearchSelection<CR>g@
+		" function! SearchSelection(type)
+		" 	if a:0 " Invoked from visual mode
+		" 		silent exec "normal! `<" . a:type . "`>y" . l:rdata
+		" 	endif
+		" endfunction
+	" End SearchSelection }}}
 
 	" Marker Folds {{{
 		" Surrounds a given text linewise with commented-out triple {} fold points.
@@ -195,6 +209,11 @@
 
 	" F10 to clear highlight
 	nnoremap <silent> <F10> :nohl<CR>
+
+	" zh and zl scroll the screen one character left and right,
+	" z<Tab> and z<S-Tab> will scroll it four characters
+	nnoremap z<Tab> 4zl
+	nnoremap z<S-Tab> 4zh
 
 	" Leader-rh to toggle rust-analyzer type hints
 	nnoremap <silent> <Leader>rh :CocCommand rust-analyzer.toggleInlayHints<CR>
@@ -441,6 +460,9 @@
 	" submitted a PR lol -j
 	let g:rustfmt_autosave = 0
 
+	" Make freitass/todo.txt-vim work with nvim
+	let g:todo_load_python = 1
+
 	" Make emmet trigger with <C-t>,
 	" The default is <C-y> but thats the binding to scroll the buffer upwards
 	" without changing ur cursor position
@@ -448,6 +470,9 @@
 
     " Make iamcco/markdown-preview.nvim use firefox
     let g:mkdp_browser='firefox'
+
+	" Properly set .tsx filetype
+	autocmd BufNewFile,BufRead *.tsx,*.jsx set filetype=typescriptreact
 
 	" Templates {{{
 		let g:tmpl_search_paths = ['~/templates']
