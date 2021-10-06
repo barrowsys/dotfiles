@@ -566,3 +566,4 @@ call nvim_win_set_cursor(0, start_cursor)
 endfunction
 " End WIP }}}
 
+let g:coc_start_at_startup = v:false
